@@ -28,6 +28,8 @@ function ChatFlow() {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [showSettingPanel,setShowSettingPanel] = useState(false);
+  const [selectedNodeId, setSelectedNodeId] = useState(null);
+  const [selectedNodeMessage, setSelectedNodeMessage] = useState("");
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
@@ -66,8 +68,9 @@ function ChatFlow() {
   );
   const onNodeClick = useCallback((event, node) => {
     console.log("Node clicked:", node.id);
+    setSelectedNodeId(node.id);
+    setSelectedNodeMessage(node.data.message); // Update message in setting panel
     setShowSettingPanel(true);
-    updateNodeData(node.id, { message: node.message });
   }, []);
 
 
@@ -87,6 +90,15 @@ function ChatFlow() {
       })
     );
   }, []);
+
+  const handleSettingChange = useCallback(
+    (newMessage) => {
+      if (selectedNodeId) {
+        updateNodeData(selectedNodeId, { message: newMessage });
+      }
+    },
+    [selectedNodeId, updateNodeData]
+  );
 
 
   return (
@@ -110,7 +122,8 @@ function ChatFlow() {
             <Controls />
           </ReactFlow>
         </div>
-        {showSettingPanel ? <SettingPanel />:<NotesPanel />}
+        {showSettingPanel ? <SettingPanel  message={selectedNodeMessage}
+              onChange={handleSettingChange}/>:<NotesPanel />}
        </div>
       </ReactFlowProvider>
     </div>

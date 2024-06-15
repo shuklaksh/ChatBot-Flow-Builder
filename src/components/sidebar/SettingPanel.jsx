@@ -1,8 +1,12 @@
 import { useState } from "react";
 import { IoMdArrowBack } from "react-icons/io";
 
-function SettingPanel() {
-    const [nodeMessage, setNodeMesssage] = useState("");
+function SettingPanel({message, onChange}) {
+    const [nodeMessage, setNodeMesssage] = useState(message);
+    const handleChange = (e) => {
+        onChange(e.target.value);
+        setNodeMesssage(e.target.value);
+      };
   return (
     <div className="w-1/4">
     <aside className=" h-full w-full border-t border-l border-gray-200 py-1">
@@ -15,7 +19,7 @@ function SettingPanel() {
             <div>
                 Text
             </div>
-            <textarea className="border rounded w-full px-2" value={nodeMessage} onChange={(e) => {setNodeMesssage(e.target.value)}}/>
+            <textarea className="border rounded w-full px-2" value={nodeMessage} onChange={handleChange}/>
         </div>
       </div>
     </aside>
