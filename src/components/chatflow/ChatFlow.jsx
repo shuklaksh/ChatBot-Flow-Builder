@@ -1,37 +1,33 @@
+import { useCallback, useRef, useState } from "react";
 import ReactFlow, {
-  ReactFlowProvider,
-  Controls,
-  Background,
-  addEdge,
-  useNodesState,
-  useEdgesState,
+    Background,
+    Controls,
+    ReactFlowProvider,
+    addEdge,
+    useEdgesState,
+    useNodesState,
 } from "reactflow";
-import { useCallback, useState, useRef } from "react";
 import "reactflow/dist/style.css";
-import Sidebar from "../sidebar/Sidebar";
+import NotesPanel from "../sidebar/NotesPanel";
+import MessageNode from "../customeNodes/MessageNode";
+import SettingPanel from "../sidebar/SettingPanel";
 
 const initialNodes = [
-  {
-    id: "1",
-    data: { label: "Hello" },
-    position: { x: 0, y: 0 },
-    type: "input",
-  },
-  {
-    id: "2",
-    data: { label: "World" },
-    position: { x: 100, y: 100 },
-  },
 ];
 
 let id = 0;
-const getId = () => `dndnode_${id++}`;
+const getId = () => `${id++}`;
+
+const nodeTypes = {
+    MessageNode: MessageNode,
+  };
 
 function ChatFlow() {
   const reactFlowWrapper = useRef(null);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const [showSettingPanel,setShowSettingPanel] = useState(false);
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
@@ -60,7 +56,7 @@ function ChatFlow() {
         id: getId(),
         type,
         position,
-        data: { label: `${type} node` },
+        data: { message: `text message ${id}`  },
       };
 
       setNodes((nds) => nds.concat(newNode));
@@ -68,6 +64,30 @@ function ChatFlow() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [reactFlowInstance]
   );
+  const onNodeClick = useCallback((event, node) => {
+    console.log("Node clicked:", node.id);
+    setShowSettingPanel(true);
+    updateNodeData(node.id, { message: node.message });
+  }, []);
+
+
+  const updateNodeData = useCallback((id, newData) => {
+    setNodes((nds) =>
+      nds.map((node) => {
+        if (node.id === id) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              ...newData,
+            },
+          };
+        }
+        return node;
+      })
+    );
+  }, []);
+
 
   return (
     <div className="dndflow h-full w-full">
@@ -83,13 +103,14 @@ function ChatFlow() {
             onInit={setReactFlowInstance}
             onDrop={onDrop}
             onDragOver={onDragOver}
-            fitView
+            nodeTypes={nodeTypes}
+            onNodeClick={onNodeClick}
           >
             <Background />
             <Controls />
           </ReactFlow>
         </div>
-        <Sidebar />
+        {showSettingPanel ? <SettingPanel />:<NotesPanel />}
        </div>
       </ReactFlowProvider>
     </div>
