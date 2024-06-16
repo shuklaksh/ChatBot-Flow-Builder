@@ -10,8 +10,6 @@ Access my site at [here](https://chat-bot-flow-builder-five.vercel.app/)
 - [Screenshots](#screenshots)
 - [Technologies](#technologies)
 - [Setup](#setup)
-- [Approach](#approach)
-- [Status](#status)
 - [Credits](#credits)
 - [License](#license)
 
