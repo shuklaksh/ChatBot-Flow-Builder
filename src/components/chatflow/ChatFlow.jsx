@@ -45,7 +45,7 @@ function ChatFlow() {
       });
       const newId = getId();
       const newNode = {
-        id: newId(),
+        id: newId,
         type,
         position,
         data: { message: `text message ${newId}` },
