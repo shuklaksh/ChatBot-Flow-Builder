@@ -1,26 +1,22 @@
 import { useCallback, useState } from "react";
 import ReactFlow, {
-    Background,
-    Controls,
-    addEdge,
-    useEdgesState,
-    useNodesState,
+  Background,
+  Controls,
+  addEdge,
+  useEdgesState,
+  useNodesState,
 } from "reactflow";
 import "reactflow/dist/style.css";
 import NotesPanel from "../sidebar/NotesPanel";
 import { nodeTypes } from "../../utils/nodeTypes";
 import SettingPanel from "../sidebar/SettingPanel";
-
-
-let id = 0;
-const getId = () => `${id++}`;
-
+import { getId } from "../../utils/constant&functions";
 
 function ChatFlow() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
-  const [showSettingPanel,setShowSettingPanel] = useState(false);
+  const [showSettingPanel, setShowSettingPanel] = useState(false);
   const [selectedNodeId, setSelectedNodeId] = useState(null);
   const [selectedNodeMessage, setSelectedNodeMessage] = useState("");
 
@@ -47,11 +43,12 @@ function ChatFlow() {
         x: event.clientX,
         y: event.clientY,
       });
+      const newId = getId();
       const newNode = {
-        id: getId(),
+        id: newId(),
         type,
         position,
-        data: { message: `text message ${id}`  },
+        data: { message: `text message ${newId}` },
       };
 
       setNodes((nds) => nds.concat(newNode));
@@ -65,7 +62,9 @@ function ChatFlow() {
     setShowSettingPanel(true);
   }, []);
 
-
+  {
+    /* function to update data of existing node */
+  }
   const updateNodeData = useCallback((id, newData) => {
     setNodes((nds) =>
       nds.map((node) => {
@@ -83,6 +82,9 @@ function ChatFlow() {
     );
   }, []);
 
+  {
+    /* function to handle text change in settings panel */
+  }
   const handleSettingChange = useCallback(
     (newMessage) => {
       if (selectedNodeId) {
@@ -91,7 +93,6 @@ function ChatFlow() {
     },
     [selectedNodeId, updateNodeData]
   );
-
 
   return (
     <div className="dndflow h-full w-full">
@@ -113,14 +114,17 @@ function ChatFlow() {
             <Controls />
           </ReactFlow>
         </div>
-        {showSettingPanel ? 
-        <SettingPanel  
-        message={selectedNodeMessage}
-        onChange={handleSettingChange}
-        setShowSettingPanel={setShowSettingPanel}
-        /> : 
-        <NotesPanel />}
-       </div>
+        {/* to check which panel to show */}
+        {showSettingPanel ? (
+          <SettingPanel
+            message={selectedNodeMessage}
+            onChange={handleSettingChange}
+            setShowSettingPanel={setShowSettingPanel}
+          />
+        ) : (
+          <NotesPanel />
+        )}
+      </div>
     </div>
   );
 }
