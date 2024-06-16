@@ -1,18 +1,47 @@
-import React from 'react'
+import React from "react";
+import { useNodes, useEdges } from "reactflow";
+import toast, { Toaster } from "react-hot-toast";
+import { translation } from "../../utils/en-us";
+
+const notify = () =>
+  toast.error("CantSavFlow", {
+    id: "error",
+  });
 
 function Navbar() {
+  const nodes = useNodes();
+  const edges = useEdges();
+  const handleSave = () => {
+    if (nodes.length > 1) {
+      edges.length === nodes.length - 1 ? console.log("correct") : notify();
+    }
+  };
   return (
     <React.Fragment>
-        <nav className='w-full flex justify-between items-center p-4 pr-16 bg-gray-100'>
-            <div>
-                <p>Bite Speed</p>
-            </div>
-            <div className=' border border-sky-500 rounded  p-1 px-2 bg-white'>
-                <button className='btn rounded-sm text-sm text-sky-800 font-bold'>Save Changes</button>
-            </div>
-        </nav>
+      <nav className="w-full flex justify-between items-center p-4 pr-16 bg-gray-100">
+        <div>
+          <p>{translation?.BiteSpeed}</p>
+        </div>
+        <div className=" border border-sky-500 rounded  p-1 px-2 bg-white">
+          <button
+            className="btn rounded-sm text-sm text-sky-800 font-bold"
+            onClick={handleSave}
+          >
+            {translation?.SaveChanges}
+          </button>
+        </div>
+      </nav>
+      <Toaster
+        toastOptions={{
+          error: {
+            style: {
+              background: "#f54260",
+            },
+          },
+        }}
+      />
     </React.Fragment>
-  )
+  );
 }
 
-export default Navbar
+export default Navbar;

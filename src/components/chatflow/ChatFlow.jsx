@@ -1,30 +1,23 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import ReactFlow, {
     Background,
     Controls,
-    ReactFlowProvider,
     addEdge,
     useEdgesState,
     useNodesState,
 } from "reactflow";
 import "reactflow/dist/style.css";
 import NotesPanel from "../sidebar/NotesPanel";
-import MessageNode from "../customeNodes/MessageNode";
+import { nodeTypes } from "../../utils/nodeTypes";
 import SettingPanel from "../sidebar/SettingPanel";
 
-const initialNodes = [
-];
 
 let id = 0;
 const getId = () => `${id++}`;
 
-const nodeTypes = {
-    MessageNode: MessageNode,
-  };
 
 function ChatFlow() {
-  const reactFlowWrapper = useRef(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [showSettingPanel,setShowSettingPanel] = useState(false);
@@ -44,10 +37,10 @@ function ChatFlow() {
     (event) => {
       event.preventDefault();
 
-      const type = event.dataTransfer.getData("application/reactflow");
+      const type = event?.dataTransfer?.getData("application/reactflow");
 
       // check if the dropped element is valid
-      if (typeof type === "undefined" || !type) {
+      if (typeof type === "undefined") {
         return;
       }
       const position = reactFlowInstance.screenToFlowPosition({
@@ -67,7 +60,6 @@ function ChatFlow() {
     [reactFlowInstance]
   );
   const onNodeClick = useCallback((event, node) => {
-    console.log("Node clicked:", node.id);
     setSelectedNodeId(node.id);
     setSelectedNodeMessage(node.data.message); // Update message in setting panel
     setShowSettingPanel(true);
@@ -103,9 +95,8 @@ function ChatFlow() {
 
   return (
     <div className="dndflow h-full w-full">
-      <ReactFlowProvider>
       <div className="flex flex-row h-full w-full">
-        <div className="reactflow-wrapper h-full w-full" ref={reactFlowWrapper}>
+        <div className="reactflow-wrapper h-full w-full">
           <ReactFlow
             nodes={nodes}
             edges={edges}
@@ -122,10 +113,14 @@ function ChatFlow() {
             <Controls />
           </ReactFlow>
         </div>
-        {showSettingPanel ? <SettingPanel  message={selectedNodeMessage}
-              onChange={handleSettingChange}/>:<NotesPanel />}
+        {showSettingPanel ? 
+        <SettingPanel  
+        message={selectedNodeMessage}
+        onChange={handleSettingChange}
+        setShowSettingPanel={setShowSettingPanel}
+        /> : 
+        <NotesPanel />}
        </div>
-      </ReactFlowProvider>
     </div>
   );
 }

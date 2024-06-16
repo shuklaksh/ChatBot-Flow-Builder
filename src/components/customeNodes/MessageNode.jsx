@@ -1,6 +1,7 @@
 import { Handle, Position } from "reactflow";
 import { BiMessageRoundedDetail } from "react-icons/bi";
 import { BsWhatsapp } from "react-icons/bs";
+import { translation } from "../../utils/en-us";
 
 function MessageNode({data}) {
   return (
@@ -9,7 +10,7 @@ function MessageNode({data}) {
       <div className="border rounded shadow-lg bg-white">
         <div className="flex flex-row items-center gap-2 bg-[#b5ede3] px-1 py-0.5">
           <BiMessageRoundedDetail size={12} />
-          <div className="text-xs">Send Message</div>
+          <div className="text-xs">{translation.SendMessage}</div>
           <div className="ml-auto p-1 bg-white rounded-full">
             <BsWhatsapp className="" size={12} color={"green"} />
           </div>
