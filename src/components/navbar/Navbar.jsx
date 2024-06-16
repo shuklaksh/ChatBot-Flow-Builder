@@ -4,7 +4,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { translation } from "../../utils/en-us";
 
 const notify = () =>
-  toast.error("CantSavFlow", {
+  toast.error(translation.CantSaveFlow, {
     id: "error",
   });
 
@@ -36,6 +36,7 @@ function Navbar() {
           error: {
             style: {
               background: "#f54260",
+              color: 'white'
             },
           },
         }}
