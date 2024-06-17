@@ -14,7 +14,7 @@ function Navbar() {
 
   const handleSave = () => {
     if (nodes.length > 1) {
-      edges.length === nodes.length - 1 
+      edges.length >= nodes.length - 1 
         ? console.log("correct")
         : errorNotification();
     }
